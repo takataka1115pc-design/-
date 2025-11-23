@@ -20,13 +20,13 @@
             font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
             /* --- 背景画像設定 --- */
             /* ↓ここに画像のパスを指定してください (例: url('./unnamed.jpg')) */
-            background-image: url('https://media.discordapp.net/attachments/1272916264414613626/1442141960142852116/your-background-image.jpg?ex=69245add&is=6923095d&hm=f7f790180d9d867c4c6177e90694be97984cfcfea32d615134ad49d133ba2e3e&=&format=webp&width=1280&height=715'); /* サンプル画像です */
+            background-image: url('https://t4.ftcdn.net/jpg/05/54/74/61/360_F_554746181_wxVU6CHBOxpkqAqHjSYivM2c45gOEE0H.jpg'); /* サンプル画像です */
             background-size: cover;
             background-position: center;
-            background-attachment: fixed; /* スクロールしても背景を固定 */
-            position: relative;
+            /* 軽量化: background-attachment: fixed; を削除しました（スクロール時に背景も動くようになります） */
+            background-color: #f8fafc; /* 画像読み込み前の背景色 */
         }
-        /* --- 背景の「薄い感じ」を出すためのオーバーレイ --- */
+        /* 軽量化: オーバーレイは単純な背景色指定に変更 */
         body::before {
             content: '';
             position: fixed;
@@ -34,9 +34,9 @@
             left: 0;
             width: 100%;
             height: 100%;
-            /* Slate-50色をベースに透明度を設定して重ねる */
-            background-color: rgba(248, 250, 252, 0.7); 
-            z-index: -1; /* コンテンツの後ろに配置 */
+            background-color: rgba(255, 255, 255, 0.4); /* 白を少し重ねて文字を見やすく */
+            z-index: -1;
+            pointer-events: none; /* クリックを透過 */
         }
 
         @keyframes fadeIn {
@@ -44,12 +44,11 @@
             to { opacity: 1; transform: translateY(0); }
         }
         .animate-fade-in {
-            animation: fadeIn 0.5s ease-out forwards;
+            animation: fadeIn 0.3s ease-out forwards; /* アニメーション時間も短縮 */
         }
     </style>
 </head>
-<!-- bodyのクラスから bg-slate-50 を削除し、テキスト色のみ指定 -->
-<body class="text-slate-800">
+<body class="text-slate-800 antialiased">
     <div id="root"></div>
 
     <script type="text/babel">
@@ -352,8 +351,8 @@
                 </div>
               </header>
 
-              {/* Main Content Container with subtle background and blur */}
-              <main className="container mx-auto px-4 py-6 bg-white/60 backdrop-blur-md rounded-xl my-8 shadow-lg">
+              {/* Main Content Container - 透過率を下げて負荷軽減 (bg-white/95) */}
+              <main className="container mx-auto px-4 py-6 bg-white/95 rounded-xl my-8 shadow-sm">
                 
                 {/* Search Bar */}
                 <div className="mb-8 max-w-2xl mx-auto">
@@ -361,7 +360,7 @@
                     <input
                       type="text"
                       placeholder="地域名や曲名で検索（例：熱海、夕焼け小焼け）"
-                      className="w-full pl-12 pr-4 py-3 rounded-lg border border-slate-300 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition-all shadow-sm bg-white/80"
+                      className="w-full pl-12 pr-4 py-3 rounded-lg border border-slate-300 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition-all shadow-sm bg-white"
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
                     />
@@ -396,8 +395,8 @@
 
                           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                             {cityNames.map(city => (
-                              /* Card with stronger shadow to "pop out" */
-                              <div key={city} className="bg-white rounded-xl shadow-lg border border-slate-100 overflow-hidden break-inside-avoid transition-shadow hover:shadow-xl">
+                              /* Card with simplified shadow */
+                              <div key={city} className="bg-white rounded-xl shadow border border-slate-100 overflow-hidden break-inside-avoid transition-shadow hover:shadow-md">
                                 <div className="bg-slate-50 px-4 py-3 border-b border-slate-100 font-bold text-lg text-slate-700 whitespace-pre-wrap">
                                   {city}
                                 </div>
@@ -415,7 +414,7 @@
                                         <tr key={`${city}-${idx}`} className="hover:bg-slate-100/50 transition-colors">
                                           <td className="px-4 py-3 whitespace-pre-wrap align-top">{row.period}</td>
                                           <td className="px-4 py-3 align-top font-mono text-teal-700 font-semibold">{row.time}</td>
-                                          <td className="px-4 py-3 align-top whitespace-pre-wrap">{row.song || <span className="text-slate-400 italic">（調査中）</span>}</td>
+                                          <td className="px-4 py-3 align-top whitespace-pre-wrap">{row.song || <span className="text-slate-400 italic">（不明/無音）</span>}</td>
                                         </tr>
                                       ))}
                                     </tbody>
@@ -432,7 +431,7 @@
               </main>
 
               {/* Footer */}
-              <footer className="mt-12 bg-slate-800/90 backdrop-blur-sm text-slate-400 py-6 text-center text-sm">
+              <footer className="mt-12 bg-slate-800/95 text-slate-400 py-6 text-center text-sm">
                 <div className="container mx-auto px-4">
                   <p>© 静岡県時報チャイム鳴動時刻表</p>
                 </div>
